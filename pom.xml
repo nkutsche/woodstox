@@ -32,9 +32,9 @@
         <url>https://github.com/FasterXML/woodstox/issues</url>
     </issueManagement>
     <scm>
-        <connection>scm:git:git@github.com:FasterXML/woodstox.git</connection>
-        <developerConnection>scm:git:git@github.com:FasterXML/woodstox.git</developerConnection>
-        <url>https://github.com/FasterXML/woodstox</url>
+        <connection>scm:git:git@github.com:nkutsche/woodstox.git</connection>
+        <developerConnection>scm:git:git@github.com:nkutsche/woodstox.git</developerConnection>
+        <url>https://github.com/nkutsche/woodstox</url>
         <tag>HEAD</tag>
     </scm>
 
