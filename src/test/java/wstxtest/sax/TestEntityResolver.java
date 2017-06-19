@@ -23,7 +23,7 @@ public class TestEntityResolver
         throws Exception
     {
         final String XML =
-            "<!DOCTYPE root PUBLIC '//some//public//id' 'no-such-thing.dtd'>\n"
+            "<!DOCTYPE root PUBLIC '//some//public//id' 'src/test/java/wstxtest/no-such-thing.dtd'>\n"
             +"<root />"
             ;
 
