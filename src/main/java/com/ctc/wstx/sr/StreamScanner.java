@@ -454,6 +454,17 @@ public abstract class StreamScanner
                 mCurrInputRow, mInputPtr - mCurrInputRowStart + 1);
     }
 
+    public XMLStreamLocation2 getCurrentLocation(boolean lookback)
+    {
+    	if(!lookback)
+    		return getCurrentLocation();
+    	
+    	int mInputPtr = this.mInputPtr -1;
+        int col = mInputPtr - mCurrInputRowStart + 1;
+		return mInput.getLocation(mCurrInputProcessed + mInputPtr,
+                                  mCurrInputRow,
+                                  col);
+    }
     /*
     ///////////////////////////////////////////////////////////
     // InputProblemReporter implementation
@@ -1505,6 +1516,10 @@ public abstract class StreamScanner
      *    reparsed), or null char (0) to indicate expansion is done via
      *    input source.
      */
+
+
+	protected Location entityReferenceEndLoc = null;
+	
     protected int fullyResolveEntity(boolean allowExt)
         throws XMLStreamException
     {
@@ -1523,7 +1538,9 @@ public abstract class StreamScanner
         }
 
         String id = parseEntityName(c);
- 
+        
+        entityReferenceEndLoc = ((WstxInputLocation) this.getCurrentLocation());
+        
         // Perhaps we have a pre-defined char reference?
         c = id.charAt(0);
         /*
