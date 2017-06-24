@@ -75,7 +75,7 @@ public interface AttributeListener {
 	/**
 	 * Notification about a parsing start of an attribute region
 	 * 
-	 * @param loc
+	 * @param currentLocation
 	 *            Location of the region start - the end of the element name
 	 */
 	public abstract void attributeRegionStart(Location currentLocation);
@@ -83,7 +83,7 @@ public interface AttributeListener {
 	/**
 	 * Notification about a parsing end of an attribute region
 	 * 
-	 * @param loc
+	 * @param currentLocation
 	 *            Location of the region end Closing bracket (>) or closing
 	 *            slash (/>) of a start tag
 	 */
