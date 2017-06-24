@@ -1906,6 +1906,7 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 	 *            TextBuilder into which attribute value will be added
 	 */
 	private final void parseAttrValue(char openingQuote, TextBuilder tb) throws XMLStreamException {
+		final int startSize = tb.getCharSize();
 		char[] outBuf = tb.getCharBuffer();
 		int outPtr = tb.getCharSize();
 		int outLen = outBuf.length;
@@ -1998,7 +1999,7 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 		// Fine; let's tell TextBuild we're done:
 		tb.setBufferSize(outPtr);
 		attributeListener(ATTR_LIST_VALUE_END, new String[]{
-				new String(tb.getCharBuffer(), 0, tb.getCharSize())
+				new String(tb.getCharBuffer(), startSize, tb.getCharSize() - startSize)
 				});
 	}
 

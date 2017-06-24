@@ -2,11 +2,8 @@
 
 The gold standard Stax XML API implementation. Now at Github.
 
-## Status
-
-[![Build Status](https://travis-ci.org/FasterXML/woodstox.svg)](https://travis-ci.org/FasterXML/woodstox)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.woodstox/woodstox-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.woodstox/woodstox-core/)
-[![Javadoc](https://javadoc-emblem.rhcloud.com/doc/com.fasterxml.woodstox/woodstox-core/badge.svg)](http://www.javadoc.io/doc/com.fasterxml.woodstox/woodstox-core)
+[FORKED VERSION] Plese note, that this is a forked version of 
+[FasterXML/woodstox](https://github.com/FasterXML/woodstox).
 
 # Get it!
 
@@ -15,9 +12,9 @@ The gold standard Stax XML API implementation. Now at Github.
 The most common way is to use Maven (or Ivy) to access it from Maven Central repository.
 Coordinates for this are:
 
-* Group id: `com.fasterxml.woodstox`
+* Group id: `com.github.nkutsche`
 * Artifact id: `woodstox-core`
-* Latest published version: 5.0.3 (23-Aug-2016)
+* Latest published version: 5.1.0 (24-June-2017)
     * (NOTE! Version `5.0.0` was accidentally released as broken, not containing actual classes -- 5.0.1 is the first functioning 5.x version).
 
 Note that Maven id has changed since Woodstox 4.x.
