@@ -453,7 +453,12 @@ public abstract class StreamScanner
         return mInput.getLocation(mCurrInputProcessed + mInputPtr,
                 mCurrInputRow, mInputPtr - mCurrInputRowStart + 1);
     }
-
+    /**
+     * Returns location of the current parsing process
+     * @param lookback
+     * 			determines if the current parsing location 
+     * 			should be moved by one character
+     */
     public XMLStreamLocation2 getCurrentLocation(boolean lookback)
     {
     	if(!lookback)

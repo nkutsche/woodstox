@@ -1916,6 +1916,7 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 			char c = (mInputPtr < mInputEnd) ? mInputBuffer[mInputPtr++] : getNextChar(SUFFIX_IN_ATTR_VALUE);
 			
 			if(entityReferenceEndLoc != null){
+//				let attribute listener know, that an entity parsing stops here
 				attributeListener(ATTR_LIST_ENTITY_END, new Object[]{entityReferenceEndLoc, new Integer(mInputEnd)});
 				entityReferenceEndLoc = null;
 			}
@@ -1956,12 +1957,14 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 					if (mInput == currScope) {
 						break;
 					}
-				} else if (c == '&') { // an entity of some sort...
+				} else if (c == '&') { 
+					// an entity of some sort stars here...
 					attributeListener(ATTR_LIST_ENTITY_START);
 					int ch;
 					if (inputInBuffer() >= 3 && (ch = resolveSimpleEntity(true)) != 0) {
 						// Ok, fine, c is whatever it is
 						;
+//						an entity parsing stops here
 						attributeListener(ATTR_LIST_ENTITY_END, new Object[]{null, new Integer(1)});
 					} else { // full entity just changes buffer...
 						ch = fullyResolveEntity(false);
@@ -1998,6 +2001,7 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 
 		// Fine; let's tell TextBuild we're done:
 		tb.setBufferSize(outPtr);
+//		an attribute value parsing stops here
 		attributeListener(ATTR_LIST_VALUE_END, new String[]{
 				new String(tb.getCharBuffer(), startSize, tb.getCharSize() - startSize)
 				});
@@ -2985,14 +2989,18 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 			 * closing '>' right away. Let's do that, since it can save a call
 			 * to a rather long method.
 			 */
+//			let attribute listener know, that an attribute region starts here
 			attributeListener(ATTR_LIST_REGION_START);
 			empty = (c == '>') ? false : handleNsAttrs(c);
+//			the attribute region parsing stops here
 			attributeListener(ATTR_LIST_REGION_END);
 		} else { // Namespace handling not enabled:
 			mElementStack.push(null, parseFullName(c));
 			c = (mInputPtr < mInputEnd) ? mInputBuffer[mInputPtr++] : getNextCharFromCurrent(SUFFIX_IN_ELEMENT);
+//			An attribute region starts here
 			attributeListener(ATTR_LIST_REGION_START);
 			empty = (c == '>') ? false : handleNonNsAttrs(c);
+//			the attribute region parsing stops here
 			attributeListener(ATTR_LIST_REGION_END);
 		}
 		if (!empty) {
@@ -3053,6 +3061,7 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 
 			c = (mInputPtr < mInputEnd) ? mInputBuffer[mInputPtr++] : getNextCharFromCurrent(SUFFIX_IN_ELEMENT);
 
+//			the attribute name parsing stops here
 			attributeListener(ATTR_LIST_NAME_END, new String[]{prefix, localName});
 			
             
@@ -3068,6 +3077,7 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 				c = getNextInCurrAfterWS(SUFFIX_IN_ELEMENT, c);
 			}
 
+//			an attribute value parsing starts here
 			attributeListener(ATTR_LIST_VALUE_START);
 			
 
@@ -3133,41 +3143,71 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 	private static final int ATTR_LIST_ENTITY_START = 6;
 	private static final int ATTR_LIST_ENTITY_END = 7;
 
+	
 	private void attributeListener(int method) {
 		attributeListener(method, new Object[0]);
 	}
-
+	/**
+	 * Method should be called to notify the AttributeListener 
+	 * about events during the attribute parsing process
+	 * 
+	 * @param method 
+	 * 		determines the kind of event, 
+	 * 		the attribute listener will be notified about.
+	 * 
+	 *  @param args
+	 *  	parses some additional informations about the event
+	 *  	the kind of information is depending on the method param
+	 *
+	 */
 	private void attributeListener(int method, Object[] args) {
+//		The attribute listener is not set, so do nothing
 		if (ATTRIBUTE_LISTENER == null)
 			return;
+		
+//		switch for the different kind of events
 		switch (method) {
+		
+//		event is the start of an attribute region
 		case ATTR_LIST_REGION_START:
 			ATTRIBUTE_LISTENER.attributeRegionStart(this
 					.getCurrentLocation(true));
 			break;
+//			event is the start of an attribute name
 		case ATTR_LIST_NAME_START:
 			ATTRIBUTE_LISTENER.attributeNameStart(this.getCurrentLocation(true));
 			break;
+//			event is the end of an attribute name
+//			the first item in args should be the parsed prefix,
+//			the second item in args should be the parsed local name of the attribute
 		case ATTR_LIST_NAME_END:
 			ATTRIBUTE_LISTENER.attributeNameEnd(this.getCurrentLocation(true),
 					args.length >= 1 ? (String) args[0] : "", args.length >= 2 ? (String) args[1]
 							: "");
 			break;
+//			event is the start of an attribute value
 		case ATTR_LIST_VALUE_START:
 			ATTRIBUTE_LISTENER.attributeValueStart(this.getCurrentLocation(true));
 			break;
+//			event is the end of an attribute value
+//			the first item in args should be the parsed value
 		case ATTR_LIST_VALUE_END:
 			ATTRIBUTE_LISTENER.attributeValueEnd(this.getCurrentLocation(),
 					args.length >= 1 ? (String) args[0] : "");
 			break;
+//			event is the end of an attribute region
 		case ATTR_LIST_REGION_END:
 			ATTRIBUTE_LISTENER
 					.attributeRegionEnd(this.getCurrentLocation(true));
 			break;
+//			event is the start of an entity
 		case ATTR_LIST_ENTITY_START:
 			ATTRIBUTE_LISTENER
 			.attributeEntityStart(this.getCurrentLocation(true));
 			break;
+//			event is the end of an entity
+//			first item in args is null or the location of the entity end
+//			second item in args is the length of the entity
 		case ATTR_LIST_ENTITY_END:
 			Location loc = null;
 			Integer length = new Integer(0);
@@ -3185,6 +3225,7 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 			.attributeEntityEnd(loc, length);
 			break;
 			
+//			The method is unknown, so do nothing
 		default:
 			break;
 		}
@@ -3195,17 +3236,18 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 	 */
 	private final boolean handleNonNsAttrs(char c) throws XMLStreamException {
 		AttributeCollector ac = mAttrCollector;
-
+//		let attribute listener know, that an attribute region starts here
 		attributeListener(ATTR_LIST_REGION_START);
 		while (true) {
 			if (c <= CHAR_SPACE) {
-//				tell the attribute listener, that a attribute name starts here
+//				the attribute name parsing starts here
 				attributeListener(ATTR_LIST_NAME_START);
 				c = getNextInCurrAfterWS(SUFFIX_IN_ELEMENT, c);
 			} else if (c != '/' && c != '>') {
 				throwUnexpectedChar(c, " excepted space, or '>' or \"/>\"");
 			}
 			if (c == '/') {
+//				the attribute region parsing stops here
 				attributeListener(ATTR_LIST_REGION_END);
 				c = getNextCharFromCurrent(SUFFIX_IN_ELEMENT);
 				if (c != '>') {
@@ -3213,6 +3255,7 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 				}
 				return true;
 			} else if (c == '>') {
+//				the attribute region parsing stops here
 				attributeListener(ATTR_LIST_REGION_END);
 				return false;
 			} else if (c == '<') {
@@ -3223,7 +3266,7 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 			TextBuilder tb = ac.getAttrBuilder(null, name);
 			c = (mInputPtr < mInputEnd) ? mInputBuffer[mInputPtr++] : getNextCharFromCurrent(SUFFIX_IN_ELEMENT);
 
-
+//			the attribute name parsing stops here
 			attributeListener(ATTR_LIST_NAME_END, new String[]{null, name});
 			
 			if (c <= CHAR_SPACE) {
@@ -3237,6 +3280,7 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 				c = getNextInCurrAfterWS(SUFFIX_IN_ELEMENT, c);
 			}
 
+//			the attribute value parsing starts here
 			attributeListener(ATTR_LIST_VALUE_START);
 			
 			// And then a quote:
