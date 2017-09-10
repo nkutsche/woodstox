@@ -14,7 +14,7 @@ Coordinates for this are:
 
 * Group id: `com.github.nkutsche`
 * Artifact id: `woodstox-core`
-* Latest published version: 5.1.0 (24-June-2017)
+* Latest published version: 5.2.0 (10-Sep-2017)
     * (NOTE! Version `5.0.0` was accidentally released as broken, not containing actual classes -- 5.0.1 is the first functioning 5.x version).
 
 Note that Maven id has changed since Woodstox 4.x.
