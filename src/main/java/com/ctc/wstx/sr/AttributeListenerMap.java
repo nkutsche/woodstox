@@ -104,7 +104,7 @@ public class AttributeListenerMap extends HashMap<String, AttributeListener> {
 	/**
 	 * Notification about a parsing start of an attribute region
 	 * 
-	 * @param currentLocation
+	 * @param loc
 	 *            Location of the region start - the end of the element name
 	 */
 	public void attributeRegionStart(Location loc){
@@ -117,7 +117,7 @@ public class AttributeListenerMap extends HashMap<String, AttributeListener> {
 	/**
 	 * Notification about a parsing end of an attribute region
 	 * 
-	 * @param currentLocation
+	 * @param loc
 	 *            Location of the region end Closing bracket (&gt;) or closing
 	 *            slash (/&gt;) of a start tag
 	 */
