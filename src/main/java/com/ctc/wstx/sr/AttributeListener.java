@@ -8,12 +8,14 @@ import org.codehaus.stax2.XMLStreamProperties;
  * Interface to implement an Attribute Listener Used in BasicStreamReader to
  * notifications about the locations of - attribute name start / end - attribute
  * value start / end - attribute region start / end (starts with the end of the
- * element name, ends with the closing bracket (>) or the closing slash (/>) -
+ * element name, ends with the closing bracket (&gt;) or the closing slash (/&gt;) -
  * entity start / end in an attribute value This notifications will be thrown,
  * during the parsing process
  */
 public interface AttributeListener {
-
+	
+	public abstract String getSystemId();
+	
 	/**
 	 * Notification about a parsing start of an attribute name
 	 * 
@@ -84,8 +86,8 @@ public interface AttributeListener {
 	 * Notification about a parsing end of an attribute region
 	 * 
 	 * @param currentLocation
-	 *            Location of the region end Closing bracket (>) or closing
-	 *            slash (/>) of a start tag
+	 *            Location of the region end Closing bracket (&gt;) or closing
+	 *            slash (/&gt;) of a start tag
 	 */
 	public abstract void attributeRegionEnd(Location currentLocation);
 }

@@ -17,6 +17,7 @@ package com.ctc.wstx.sr;
 
 import java.io.*;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.xml.sax.Attributes;
@@ -140,7 +141,15 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 	final static int ALL_WS_NO = 0x0002;
 
 	// AttributeListener
-	public static AttributeListener ATTRIBUTE_LISTENER = null;
+	private static AttributeListenerMap ATTRIBUTE_LISTENER_MAP = new AttributeListenerMap();
+	
+	public static void addAttributeListener(AttributeListener aListener){
+		ATTRIBUTE_LISTENER_MAP.put(aListener);
+	}
+	
+	public static void removeAttributeListener(AttributeListener aListener){
+		ATTRIBUTE_LISTENER_MAP.remove(aListener);
+	}
 	/*
 	 * 2 magic constants used for enabling/disabling indentation checks: (to
 	 * minimize negative impact for both small docs, and large docs with
@@ -365,7 +374,7 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 
 	/**
 	 * Configuration from
-	 * {@link XMLStreamProperties.RETURN_NULL_FOR_DEFAULT_NAMESPACE}
+	 * {XMLStreamProperties.RETURN_NULL_FOR_DEFAULT_NAMESPACE}
 	 * 
 	 * @since 4.1.2
 	 */
@@ -640,8 +649,8 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 	 * From StAX specs: <blockquote> Reads the content of a text-only element,
 	 * an exception is thrown if this is not a text-only element. Regardless of
 	 * value of javax.xml.stream.isCoalescing this method always returns
-	 * coalesced content. <br/>
-	 * Precondition: the current event is START_ELEMENT. <br/>
+	 * coalesced content. <br>
+	 * Precondition: the current event is START_ELEMENT. <br>
 	 * Postcondition: the current event is the corresponding END_ELEMENT.
 	 * </blockquote>
 	 */
@@ -1465,7 +1474,7 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 
 	/**
 	 * @return True, if cursor points to a start or end element that is
-	 *         constructed from 'empty' element (ends with '/>'); false
+	 *         constructed from 'empty' element (ends with '/&gt;'); false
 	 *         otherwise.
 	 */
 	@Override
@@ -3162,7 +3171,7 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 	 */
 	private void attributeListener(int method, Object[] args) {
 //		The attribute listener is not set, so do nothing
-		if (ATTRIBUTE_LISTENER == null)
+		if (ATTRIBUTE_LISTENER_MAP == null)
 			return;
 		
 //		switch for the different kind of events
@@ -3170,39 +3179,39 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 		
 //		event is the start of an attribute region
 		case ATTR_LIST_REGION_START:
-			ATTRIBUTE_LISTENER.attributeRegionStart(this
+			ATTRIBUTE_LISTENER_MAP.attributeRegionStart(this
 					.getCurrentLocation(true));
 			break;
 //			event is the start of an attribute name
 		case ATTR_LIST_NAME_START:
-			ATTRIBUTE_LISTENER.attributeNameStart(this.getCurrentLocation(true));
+			ATTRIBUTE_LISTENER_MAP.attributeNameStart(this.getCurrentLocation(true));
 			break;
 //			event is the end of an attribute name
 //			the first item in args should be the parsed prefix,
 //			the second item in args should be the parsed local name of the attribute
 		case ATTR_LIST_NAME_END:
-			ATTRIBUTE_LISTENER.attributeNameEnd(this.getCurrentLocation(true),
+			ATTRIBUTE_LISTENER_MAP.attributeNameEnd(this.getCurrentLocation(true),
 					args.length >= 1 ? (String) args[0] : "", args.length >= 2 ? (String) args[1]
 							: "");
 			break;
 //			event is the start of an attribute value
 		case ATTR_LIST_VALUE_START:
-			ATTRIBUTE_LISTENER.attributeValueStart(this.getCurrentLocation(true));
+			ATTRIBUTE_LISTENER_MAP.attributeValueStart(this.getCurrentLocation(true));
 			break;
 //			event is the end of an attribute value
 //			the first item in args should be the parsed value
 		case ATTR_LIST_VALUE_END:
-			ATTRIBUTE_LISTENER.attributeValueEnd(this.getCurrentLocation(),
+			ATTRIBUTE_LISTENER_MAP.attributeValueEnd(this.getCurrentLocation(),
 					args.length >= 1 ? (String) args[0] : "");
 			break;
 //			event is the end of an attribute region
 		case ATTR_LIST_REGION_END:
-			ATTRIBUTE_LISTENER
+			ATTRIBUTE_LISTENER_MAP
 					.attributeRegionEnd(this.getCurrentLocation(true));
 			break;
 //			event is the start of an entity
 		case ATTR_LIST_ENTITY_START:
-			ATTRIBUTE_LISTENER
+			ATTRIBUTE_LISTENER_MAP
 			.attributeEntityStart(this.getCurrentLocation(true));
 			break;
 //			event is the end of an entity
@@ -3221,7 +3230,7 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 					length = (Integer) args[1];
 				}
 			}
-			ATTRIBUTE_LISTENER
+			ATTRIBUTE_LISTENER_MAP
 			.attributeEntityEnd(loc, length);
 			break;
 			
@@ -4744,7 +4753,7 @@ public abstract class BasicStreamReader extends StreamScanner implements StreamR
 	 *            immediately throwing it. If true, will just store the
 	 *            exception; if false, will not store, just throw.
 	 *
-	 * @return True if the text segment was completely read ('<' was hit, or in
+	 * @return True if the text segment was completely read ('&lt;' was hit, or in
 	 *         non-entity-expanding mode, a non-char entity); false if it may
 	 *         still continue
 	 */
