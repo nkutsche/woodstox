@@ -72,8 +72,8 @@ public abstract class StreamScanner
     /**
      * Character that allows quick check of whether a char can potentially
      * be some kind of markup, WRT input stream processing;
-     * has to contain linefeeds, &, < and > (">" only matters when
-     * quoting text, as part of "]]>")
+     * has to contain linefeeds, &amp;, &lt; and &gt; ("&gt;" only matters when
+     * quoting text, as part of "]]&gt;")
      */
     protected final static char CHAR_FIRST_PURE_TEXT = (char) ('>' + 1);
 
@@ -1506,24 +1506,24 @@ public abstract class StreamScanner
         return findEntity(id, null);
     }
 
-    /**
-     * Method that does full resolution of an entity reference, be it
-     * character entity, internal entity or external entity, including
-     * updating of input buffers, and depending on whether result is
-     * a character entity (or one of 5 pre-defined entities), returns
-     * char in question, or null character (code 0) to indicate it had
-     * to change input source.
-     *
-     * @param allowExt If true, is allowed to expand external entities
-     *   (expanding text); if false, is not (expanding attribute value).
-     *
-     * @return Either single-character replacement (which is NOT to be
-     *    reparsed), or null char (0) to indicate expansion is done via
-     *    input source.
-     */
-
 
 	protected Location entityReferenceEndLoc = null;
+	
+	/**
+	 * Method that does full resolution of an entity reference, be it
+	 * character entity, internal entity or external entity, including
+	 * updating of input buffers, and depending on whether result is
+	 * a character entity (or one of 5 pre-defined entities), returns
+	 * char in question, or null character (code 0) to indicate it had
+	 * to change input source.
+	 *
+	 * @param allowExt If true, is allowed to expand external entities
+	 *   (expanding text); if false, is not (expanding attribute value).
+	 *
+	 * @return Either single-character replacement (which is NOT to be
+	 *    reparsed), or null char (0) to indicate expansion is done via
+	 *    input source.
+	 */
 	
     protected int fullyResolveEntity(boolean allowExt)
         throws XMLStreamException
@@ -2131,7 +2131,7 @@ public abstract class StreamScanner
      * NOTE: returned String is not canonicalized, on assumption that
      * external ids may be longish, and are not shared all that often, as
      * they are generally just used for resolving paths, if anything.
-     *<br />
+     *<br >
      * Also note that this method is not heavily optimized, as it's not
      * likely to be a bottleneck for parsing.
      */
@@ -2192,7 +2192,7 @@ public abstract class StreamScanner
      * NOTE: returned String is not canonicalized, on assumption that
      * external ids may be longish, and are not shared all that often, as
      * they are generally just used for resolving paths, if anything.
-     *<br />
+     *<br >
      * Also note that this method is not heavily optimized, as it's not
      * likely to be a bottleneck for parsing.
      */

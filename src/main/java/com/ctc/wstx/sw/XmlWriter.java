@@ -46,7 +46,7 @@ import com.ctc.wstx.io.WstxInputData;
  *<p>
  * Note that implementations can have different operating modes:
  * specifically, when dealing with illegal content (such as "--"
- * in a comment, "?>" in processing instruction, or "]]>" within
+ * in a comment, "?&gt;" in processing instruction, or "]]&gt;" within
  * CDATA section), implementations can do one of 3 things:
  * <ul>
  *  <li>Fix the problem, by splitting the section (which can be done
@@ -306,7 +306,7 @@ public abstract class XmlWriter
     /**
      * @param data Contents of the CDATA section to write out
 
-     * @return offset of the (first) illegal content segment ("]]>") in
+     * @return offset of the (first) illegal content segment ("]]&gt;") in
      *   passed content and not in repairing mode; or -1 if none or is
      *   repairing
      */

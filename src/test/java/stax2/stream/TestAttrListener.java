@@ -349,7 +349,7 @@ public class TestAttrListener
          * type info processed and accessible?
          */
         setValidating(f, true);
-        BasicStreamReader.ATTRIBUTE_LISTENER = attrListener;
+        BasicStreamReader.addAttributeListener(attrListener);
         return constructStreamReader(f, contents);
     }
     
@@ -422,6 +422,12 @@ public class TestAttrListener
 				fail("Entity end without an entity start!");
 			}
 			getCash().entities.add(new int[]{entityStart.getCharacterOffset(), loc.getCharacterOffset(), valueLength});
+		}
+
+		@Override
+		public String getSystemId() {
+			// TODO Auto-generated method stub
+			return null;
 		}
     }
     

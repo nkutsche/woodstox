@@ -1030,10 +1030,7 @@ public final class ReaderConfig
      * required settings for standard StAX/StAX properties.
      *<p>
      * In addition to the standard settings, following Woodstox-specific
-     * settings are also done:
-     *<ul>
-     * <b>None</b>.
-     *</ul>
+     * settings are also done: None
      *<p>
      * Notes: Does NOT change 'performance' settings (buffer sizes,
      * DTD caching, coalescing, interning, accurate location info).
@@ -1064,11 +1061,11 @@ public final class ReaderConfig
      * required settings for standard StAX/StAX properties.
      *<p>
      * In addition to the standard settings, following Woodstox-specific
-     * settings are also done:
+     * settings are also done:</p>
      *<ul>
      *  <li>Disable <code>XMLStreamFactory2.P_LAZY_PARSING</code> (to allow for synchronous
      *    error notification by forcing full XML events to be completely
-     *    parsed when reader's <code>next() is called)
+     *    parsed when reader's <code>next()</code> is called)
      * </li>
      *</ul>
      */
